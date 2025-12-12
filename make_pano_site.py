@@ -1,22 +1,18 @@
 import os
 import shutil
-import subprocess
 from pathlib import Path
 
 # Base folder - where this script and your original images live
 BASE_DIR = Path(__file__).resolve().parent
 
 # All generated HTML + copied images will go into this folder
-OUTPUT_DIR = BASE_DIR / "site"
+OUTPUT_DIR = BASE_DIR / "docs"  # changed from "site" to "docs"
 
 # Image extensions to treat as panoramas
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
 
 # Special filenames for the plan image (case insensitive)
 PLAN_NAMES = {"plan.jpg", "plan.jpeg", "plan.png", "plan.webp"}
-
-# Toggle automatic git commit + push
-AUTO_GIT_PUBLISH = True
 
 
 VIEWER_TEMPLATE = """<!DOCTYPE html>
@@ -185,66 +181,8 @@ def clean_output_dir(path: Path) -> None:
         path.mkdir(parents=True, exist_ok=True)
 
 
-def is_git_repo(path: Path) -> bool:
-    return (path / ".git").exists()
-
-
-def run_git_command(args, cwd: Path) -> None:
-    """Run a git command and print its output."""
-    try:
-        result = subprocess.run(
-            ["git"] + args,
-            cwd=str(cwd),
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if result.stdout:
-            print(result.stdout.strip())
-        if result.stderr and result.returncode != 0:
-            print(result.stderr.strip())
-    except FileNotFoundError:
-        print("git command not found. Please install Git and ensure it is in PATH.")
-
-
-def publish_to_github():
-    """Add, commit and push changes for the site/ folder."""
-    if not is_git_repo(BASE_DIR):
-        print("This folder is not a git repository. Skipping Git publish.")
-        print("If you want auto-publish, run 'git init' and connect to a GitHub repo first.")
-        return
-
-    print("\nRunning git add for site/ ...")
-    run_git_command(["add", "site"], BASE_DIR)
-
-    print("Committing changes (if any)...")
-    commit_msg = "Update generated site"
-    result = subprocess.run(
-        ["git", "commit", "-m", commit_msg],
-        cwd=str(BASE_DIR),
-        capture_output=True,
-        text=True,
-    )
-
-    if result.returncode != 0:
-        if "nothing to commit" in result.stderr.lower() or "nothing to commit" in result.stdout.lower():
-            print("No changes to commit.")
-        else:
-            print("git commit returned an error:")
-            print(result.stdout.strip())
-            print(result.stderr.strip())
-            print("Skipping push due to commit error.")
-            return
-    else:
-        print(result.stdout.strip())
-
-    print("Pushing to remote (e.g. origin main)...")
-    run_git_command(["push"], BASE_DIR)
-    print("Git publish step finished.")
-
-
 def main():
-    # Clean and recreate site/ so it only contains fresh files
+    # Clean and recreate docs/ so it only contains fresh files
     clean_output_dir(OUTPUT_DIR)
 
     plan_image_src = None
@@ -268,17 +206,18 @@ def main():
 
     index_items = []
 
-    # Copy plan image into site/ if present
+    # Copy plan image into docs/ if present
     if plan_image_src:
         plan_image_dst_name = plan_image_src.name
         shutil.copy2(plan_image_src, OUTPUT_DIR / plan_image_dst_name)
 
-    # Copy panorama images into site/ and create viewer pages
+    # Copy panorama images into docs/ and create viewer pages
     for img_src in images_src:
         stem = img_src.stem
         safe_stem = safe_name(stem)
         viewer_filename = f"view_{safe_stem}.html"
 
+        # Destination image name (keep original name)
         img_dst_name = img_src.name
         shutil.copy2(img_src, OUTPUT_DIR / img_dst_name)
 
@@ -292,9 +231,10 @@ def main():
 
         index_items.append((stem, viewer_filename))
 
-    # Build index.html inside site/
+    # Build index.html inside docs/
     index_html_parts = [INDEX_HEADER]
 
+    # Panorama list first, with Lithuanian hint text
     if index_items:
         index_html_parts.append(
             "<p class=\"hint\">Kad atidaryti vizualizacija paspauskite ant patalpos numerio is sio saraso.</p>\n"
@@ -307,6 +247,7 @@ def main():
             )
         index_html_parts.append("</ol>\n")
 
+    # Plan image below the list
     if plan_image_dst_name:
         index_html_parts.append("<div class=\"plan-section\">\n")
         index_html_parts.append("<h2>Planas</h2>\n")
@@ -325,12 +266,9 @@ def main():
     print("To view locally:")
     print(f"1. cd {BASE_DIR}")
     print("2. python -m http.server 8000")
-    print("3. Open http://localhost:8000/site/index.html in your browser")
-
-    if AUTO_GIT_PUBLISH:
-        publish_to_github()
-    else:
-        print("\nAUTO_GIT_PUBLISH is False, skipping Git publish.")
+    print("3. Open http://localhost:8000/docs/index.html in your browser")
+    print()
+    print("On GitHub Pages, set Source = main branch, Folder = /docs.")
 
 
 if __name__ == "__main__":
