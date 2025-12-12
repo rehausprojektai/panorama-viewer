@@ -22,23 +22,25 @@
       position: absolute;
       top: 15px;
       left: 15px;
-      padding: 8px 14px;
-      background: rgba(0,0,0,0.6);
-      color: white;
+      padding: 10px 18px;
+      background: #000000;
+      color: #ffffff;
       text-decoration: none;
-      border-radius: 6px;
-      font-size: 14px;
+      border-radius: 8px;
+      font-size: 15px;
       z-index: 9999;
-      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      transition: 0.15s ease;
     }
     #back-btn:hover {
-      background: rgba(0,0,0,0.85);
+      background: #222222;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.45);
     }
   </style>
 </head>
 <body>
 
-  <a id="back-btn" href="index.html">Back</a>
+  <a id="back-btn" href="index.html">Grįžti į planą</a>
   <div id="panorama"></div>
 
   <script>

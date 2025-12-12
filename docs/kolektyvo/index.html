@@ -41,13 +41,14 @@
       color: #6b6b6b;
       margin-bottom: 18px;
     }
-    ol.pano-list {
+    ul.pano-list {
       margin: 0 0 8px;
       padding-left: 20px;
       columns: 2;
       column-gap: 24px;
+      list-style-type: "• ";
     }
-    ol.pano-list li {
+    ul.pano-list li {
       margin: 4px 4px;
       break-inside: avoid;
     }
@@ -74,7 +75,7 @@
         0 8px 24px rgba(15, 15, 15, 0.06);
     }
     @media (max-width: 600px) {
-      ol.pano-list {
+      ul.pano-list {
         columns: 1;
       }
     }
@@ -84,7 +85,7 @@
   <div class="container">
 <p class="hint">Norėdami atidaryti vizualizaciją, paspauskite ant patalpos numerio iš šio sąrašo:</p>
 <h2>Vizualizacijos</h2>
-<ol class="pano-list">
+<ul class="pano-list">
   <li><a href="view_1.html">1</a></li>
   <li><a href="view_2.html">2</a></li>
   <li><a href="view_3.html">3</a></li>
@@ -92,7 +93,7 @@
   <li><a href="view_5.html">5</a></li>
   <li><a href="view_6.html">6</a></li>
   <li><a href="view_7.html">7</a></li>
-</ol>
+</ul>
 <div class="plan-section">
 <h2>Planas</h2>
 <img class="plan" src="plan.png" alt="Plan">
