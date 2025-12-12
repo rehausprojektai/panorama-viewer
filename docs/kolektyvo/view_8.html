@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>8</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #000;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #panorama {
+      width: 100%;
+      height: 100%;
+    }
+    #back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      padding: 8px 14px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      z-index: 9999;
+      backdrop-filter: blur(6px);
+    }
+    #back-btn:hover {
+      background: rgba(0,0,0,0.85);
+    }
+  </style>
+</head>
+<body>
+
+  <a id="back-btn" href="index.html">Back</a>
+  <div id="panorama"></div>
+
+  <script>
+    pannellum.viewer('panorama', {
+      type: 'equirectangular',
+      panorama: '8.jpg',
+      autoLoad: true,
+      showControls: true
+    });
+  </script>
+
+</body>
+</html>
